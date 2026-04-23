@@ -1,0 +1,586 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Павел & Ксения | Приглашение на свадьбу</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="site-background" aria-hidden="true">
+        <video class="site-background-video" autoplay muted loop playsinline preload="none" data-src="videos/1.mp4"></video>
+    </div>
+
+    <div class="envelope-intro" id="envelopeIntro" aria-hidden="false">
+        <div class="envelope-intro__backdrop"></div>
+        <div class="envelope-intro__panel">
+            <p class="envelope-intro__closed-text envelope-intro__closed-text--top">
+                Если вы получили<br>
+                это приглашение,<br>
+                значит...
+            </p>
+            <div class="envelope-intro__envelope" id="envelopeTrigger" role="button" tabindex="0" aria-label="Открыть приглашение">
+                <img class="envelope-intro__piece envelope-intro__piece--left" src="img/envelope/left.svg?v=2" alt="" aria-hidden="true">
+                <img class="envelope-intro__piece envelope-intro__piece--right" src="img/envelope/right.svg?v=2" alt="" aria-hidden="true">
+                <img class="envelope-intro__piece envelope-intro__piece--bottom" src="img/envelope/bottom.svg?v=2" alt="" aria-hidden="true">
+                <img class="envelope-intro__piece envelope-intro__piece--top" src="img/envelope/top-open.svg?v=2" alt="" aria-hidden="true">
+                <img class="envelope-intro__seal" src="img/pechat.png" alt="" aria-hidden="true">
+            </div>
+            <button class="envelope-intro__open-button" id="envelopeOpenButton" type="button">открыть</button>
+            <p class="envelope-intro__note">вы занимаете особое место в нашей жизни 🤍</p>
+        </div>
+    </div>
+
+    <div class="invite-page" id="invitePage">
+        <!-- Главный экран -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-photo-intro">
+                    <div class="hero-photo-intro__frame" aria-label="Коллаж с Павлом и Ксенией">
+                        <div class="hero-photo-intro__panel">
+                            <img src="img/optimized/hero-1.jpg" alt="" class="hero-photo-intro__image" loading="eager" width="700" height="1244">
+                        </div>
+                        <div class="hero-photo-intro__panel">
+                            <img src="img/optimized/hero-2.jpg" alt="" class="hero-photo-intro__image" loading="eager" width="700" height="1244">
+                        </div>
+                        <div class="hero-photo-intro__panel">
+                            <img src="img/optimized/hero-3.jpg" alt="" class="hero-photo-intro__image" loading="eager" width="700" height="1244">
+                        </div>
+                    </div>
+                </div>
+                <h1 class="names">
+                    <span class="names-line">Павел</span>
+                    <span class="names-ampersand">&</span>
+                    <span class="names-line">Ксения</span>
+                </h1>
+                <p class="hero-date">2 августа 2026</p>
+                <div class="music-cue">
+                    <p class="music-cue__text">Нажмите, чтобы погрузиться в нашу атмосферу:</p>
+                    <button id="musicToggleBtn" class="music-button music-heart-button" type="button" aria-label="Включить фоновую музыку" aria-pressed="false">
+                        <svg class="music-heart-button__heart" viewBox="0 0 120 110" aria-hidden="true">
+                            <path d="M60 99 C31 76 12 60 12 35 C12 19 24 9 39 9 C49 9 56 14 60 22 C64 14 71 9 81 9 C96 9 108 19 108 35 C108 60 89 76 60 99 Z"></path>
+                        </svg>
+                        <span class="music-heart-button__icon" aria-hidden="true">
+                            <svg class="music-heart-button__glyph music-heart-button__glyph--play" viewBox="0 0 24 24" data-music-icon-play>
+                                <path d="M9 7.2v9.6a.75.75 0 0 0 1.14.644l7.2-4.8a.75.75 0 0 0 0-1.248l-7.2-4.8A.75.75 0 0 0 9 7.2Z"></path>
+                            </svg>
+                            <svg class="music-heart-button__glyph music-heart-button__glyph--pause" viewBox="0 0 24 24" data-music-icon-pause>
+                                <path d="M8.25 7A1.25 1.25 0 0 1 9.5 8.25v7.5A1.25 1.25 0 0 1 8.25 17h-.5A1.25 1.25 0 0 1 6.5 15.75v-7.5A1.25 1.25 0 0 1 7.75 7h.5Zm8 0a1.25 1.25 0 0 1 1.25 1.25v7.5A1.25 1.25 0 0 1 16.25 17h-.5a1.25 1.25 0 0 1-1.25-1.25v-7.5A1.25 1.25 0 0 1 15.75 7h.5Z"></path>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+                <audio id="weddingMusic" src="music/mot_svadebnaya.mp3" loop preload="none"></audio>
+                <div class="hero-invite">
+                    <p>Мы с любовью и трепетом готовимся к дню, который станет началом нашей семьи.</p>
+                    <p>Нам хочется, чтобы в этот особенный момент рядом были самые близкие и дорогие люди.</p>
+                    <p>Будем счастливы разделить его вместе с вами!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Календарь -->
+        <section class="calendar-section">
+            <div class="container">
+                <h2 class="section-title">Наш день</h2>
+                <div class="calendar-wrapper">
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <span class="calendar-month">АВГУСТ</span>
+                            <span class="calendar-year">2026</span>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <span>ПН</span><span>ВТ</span><span>СР</span><span>ЧТ</span><span>ПТ</span><span>СБ</span><span>ВС</span>
+                        </div>
+                        <div class="calendar-days">
+                            <!-- 1 августа 2026 - суббота -->
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span>1</span>
+                            <!-- 2 августа с сердечком -->
+                            <span class="wedding-day">2</span>
+                            <span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                            <span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span>
+                            <span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span>
+                            <span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span>
+                            <span>31</span>
+                        </div>
+                    </div>
+                    <p class="calendar-note">2 августа 2026 — день, когда мы скажем друг другу "ДА"!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Программа дня -->
+        <section class="schedule">
+            <div class="container">
+                <h2 class="section-title">Программа дня</h2>
+                <div class="timeline">
+                    <div class="timeline-item timeline-item--left">
+                        <div class="timeline-left">
+                            <div class="timeline-time">
+                                <svg class="timeline-time-icon timeline-time-icon--ceremony" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M8.5 4.5h-4c.1 3.5 1.2 6.1 3 7.4 1.8-1.3 2.9-3.9 3-7.4h-2Z"></path>
+                                    <path d="M15.5 4.5h4c-.1 3.5-1.2 6.1-3 7.4-1.8-1.3-2.9-3.9-3-7.4h2Z"></path>
+                                    <path d="M7.5 12v5.5M5.5 19.5h4M16.5 12v5.5M14.5 19.5h4"></path>
+                                </svg>
+                                15:00
+                            </div>
+                        </div>
+                        <div class="timeline-heart">
+                            <svg class="icon icon--fill" viewBox="0 0 64 58" aria-hidden="true">
+                                <path d="M32 53.5C18.5 41.8 8 33 8 20.9 8 12.9 14.1 7 21.6 7c4.5 0 8.5 2.2 10.4 5.8C33.9 9.2 37.9 7 42.4 7 49.9 7 56 12.9 56 20.9c0 12.1-10.5 20.9-24 32.6Z"></path>
+                            </svg>
+                        </div>
+                        <div class="timeline-right">
+                            <div class="timeline-content">
+                                <h3>Сбор гостей</h3>
+                                <p>Фуршет и лёгкое общение - встречаемся, обнимаемся, настраиваемся на праздник</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item timeline-item--right">
+                        <div class="timeline-left">
+                            <div class="timeline-time">
+                                <svg class="timeline-time-icon timeline-time-icon--banquet" viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="9" cy="13" r="4.2"></circle>
+                                    <circle cx="15" cy="13" r="4.2"></circle>
+                                    <path d="M10.8 7.4 12 5.5l1.2 1.9"></path>
+                                </svg>
+                                15:40
+                            </div>
+                        </div>
+                        <div class="timeline-heart">
+                            <svg class="icon icon--fill" viewBox="0 0 64 58" aria-hidden="true">
+                                <path d="M32 53.5C18.5 41.8 8 33 8 20.9 8 12.9 14.1 7 21.6 7c4.5 0 8.5 2.2 10.4 5.8C33.9 9.2 37.9 7 42.4 7 49.9 7 56 12.9 56 20.9c0 12.1-10.5 20.9-24 32.6Z"></path>
+                            </svg>
+                        </div>
+                        <div class="timeline-right">
+                            <div class="timeline-content">
+                                <h3>Церемония</h3>
+                                <p>Самый важный и трогательный момент, который мы будем счастливы разделить с вами — мы станем семьей</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item timeline-item--left">
+                        <div class="timeline-left">
+                            <div class="timeline-time">
+                                <svg class="timeline-time-icon timeline-time-icon--dinner" viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="13" r="4.1"></circle>
+                                    <circle cx="12" cy="13" r="2"></circle>
+                                    <path d="M5.8 5.2v13.4"></path>
+                                    <path d="M4.5 5.2v4.1"></path>
+                                    <path d="M7.1 5.2v4.1"></path>
+                                    <path d="M18.3 5.2v13.4"></path>
+                                    <path d="M18.3 5.2c1.2 1.2 1.5 3.6 0 5.2"></path>
+                                </svg>
+                                16:00
+                            </div>
+                        </div>
+                        <div class="timeline-heart">
+                            <svg class="icon icon--fill" viewBox="0 0 64 58" aria-hidden="true">
+                                <path d="M32 53.5C18.5 41.8 8 33 8 20.9 8 12.9 14.1 7 21.6 7c4.5 0 8.5 2.2 10.4 5.8C33.9 9.2 37.9 7 42.4 7 49.9 7 56 12.9 56 20.9c0 12.1-10.5 20.9-24 32.6Z"></path>
+                            </svg>
+                        </div>
+                        <div class="timeline-right">
+                            <div class="timeline-content">
+                                <h3>Банкет</h3>
+                                <p>Основная часть вечера: вкусная еда, теплая атмосфера, живое общение</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item timeline-item--right">
+                        <div class="timeline-left">
+                            <div class="timeline-time">
+                                <svg class="timeline-time-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M9 17.5a2.3 2.3 0 1 1-1.4-2.1"></path>
+                                    <path d="M16 15.5a2.3 2.3 0 1 1-1.4-2.1"></path>
+                                    <path d="M9 15.4V6.5l7-1.5v8.4"></path>
+                                </svg>
+                                22:00
+                            </div>
+                        </div>
+                        <div class="timeline-heart">
+                            <svg class="icon icon--fill" viewBox="0 0 64 58" aria-hidden="true">
+                                <path d="M32 53.5C18.5 41.8 8 33 8 20.9 8 12.9 14.1 7 21.6 7c4.5 0 8.5 2.2 10.4 5.8C33.9 9.2 37.9 7 42.4 7 49.9 7 56 12.9 56 20.9c0 12.1-10.5 20.9-24 32.6Z"></path>
+                            </svg>
+                        </div>
+                        <div class="timeline-right">
+                            <div class="timeline-content">
+                                <h3>Танцы</h3>
+                                <p>Музыка, танцы и лёгкий финал вечера — без сценариев и формальностей</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item timeline-item--left">
+                        <div class="timeline-left">
+                            <div class="timeline-time">
+                                <svg class="timeline-time-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M15.7 17.2a6.6 6.6 0 0 1-8.9-8.9 7.2 7.2 0 1 0 8.9 8.9Z"></path>
+                                    <path d="M17.5 5.5v3M16 7h3"></path>
+                                </svg>
+                                23:00
+                            </div>
+                        </div>
+                        <div class="timeline-heart">
+                            <svg class="icon icon--fill" viewBox="0 0 64 58" aria-hidden="true">
+                                <path d="M32 53.5C18.5 41.8 8 33 8 20.9 8 12.9 14.1 7 21.6 7c4.5 0 8.5 2.2 10.4 5.8C33.9 9.2 37.9 7 42.4 7 49.9 7 56 12.9 56 20.9c0 12.1-10.5 20.9-24 32.6Z"></path>
+                            </svg>
+                        </div>
+                        <div class="timeline-right">
+                            <div class="timeline-content">
+                                <h3>Завершение вечера</h3>
+                                <p>Постепенно будем завершать вечер и прощаться с теплом в сердце. Спасибо, что разделили этот день с нами 🤍</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Место проведения -->
+        <section class="location">
+            <div class="container">
+                <h2 class="section-title">Место встречи</h2>
+                <div class="location-photo">
+                    <img src="img/optimized/location.jpg" alt="Оранжерея" class="location-img" loading="lazy" width="960" height="640">
+                </div>
+                <p class="location-name">🌿 Оранжерея "Зимёнки Парк"</p>
+                <p class="location-address">Нижегородская обл, д. Зименки, ул. Парковая, д. 1</p>
+                <a href="https://yandex.ru/maps/-/CPFjiJy9" class="map-button" target="_blank" rel="noopener noreferrer">
+                    <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 21s6-4.35 6-10a6 6 0 1 0-12 0c0 5.65 6 10 6 10Z"></path>
+                        <circle cx="12" cy="11" r="2.5"></circle>
+                    </svg>
+                    Открыть в картах
+                </a>
+                <p class="location-note">
+                    Если вы планируете приехать на машине — на площадке предусмотрена парковка
+                </p>
+            </div>
+        </section>
+
+        <!-- Дресс-код -->
+        <section class="dresscode">
+            <div class="container">
+                <h2 class="section-title">Дресс-код</h2>
+                <div class="dresscode-text">
+                    <p>Мы с любовью продумывали каждую деталь нашего праздника, поэтому нам будет приятно, если вы поддержите выбранную нами палитру.</p>
+                    <p>Но это лишь пожелание — для нас гораздо важнее, чтобы в этот вечер вы чувствовали себя красиво, комфортно и оставались собой.</p>
+                </div>
+                <div class="dresscode-gallery">
+                    <img src="img/dresscode/heart_1.png" alt="Пример образа в пастельных тонах 1" class="dresscode-image" loading="lazy">
+                    <img src="img/dresscode/heart_2.png" alt="Пример образа в пастельных тонах 2" class="dresscode-image" loading="lazy">
+                    <img src="img/dresscode/heart_3.png" alt="Пример образа в пастельных тонах 3" class="dresscode-image" loading="lazy">
+                    <img src="img/dresscode/heart_4.png" alt="Пример образа в пастельных тонах 4" class="dresscode-image" loading="lazy">
+                </div>
+                <p class="dresscode-note">Если вам откликаются эти цвета, то оттенки и акценты можете выбрать любые. Ниже мы собрали несколько идей для вдохновения</p>
+
+                <!-- Женские образы -->
+                <div class="carousel-section">
+                    <h3 class="carousel-title">Женские образы</h3>
+                    <p class="dresscode-caption">Просим оставить белый цвет для образа невесты</p>
+                    <div class="simple-carousel">
+                        <button class="simple-prev" data-carousel="female" aria-label="Предыдущий слайд">&#10094;</button>
+                        <div class="simple-track" data-track="female">
+                            <div class="simple-slide"><img src="img/dresscode/girl1.jpg" alt="Женский образ 1" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl2.jpg" alt="Женский образ 2" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl3.jpg" alt="Женский образ 3" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl4.jpg" alt="Женский образ 4" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl5.jpg" alt="Женский образ 5" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl6.jpg" alt="Женский образ 6" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl7.jpg" alt="Женский образ 7" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl8.jpg" alt="Женский образ 8" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl9.jpg" alt="Женский образ 9" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl10.jpg" alt="Женский образ 10" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl11.jpg" alt="Женский образ 11" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl12.jpg" alt="Женский образ 12" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl13.jpg" alt="Женский образ 13" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl14.jpg" alt="Женский образ 14" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl15.jpg" alt="Женский образ 15" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl16.jpg" alt="Женский образ 16" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl17.jpg" alt="Женский образ 17" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl18.jpg" alt="Женский образ 18" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl19.jpg" alt="Женский образ 19" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl20.jpg" alt="Женский образ 20" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl21.jpg" alt="Женский образ 21" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl22.jpg" alt="Женский образ 22" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/girl23.jpg" alt="Женский образ 23" loading="lazy"></div>
+                        </div>
+                        <button class="simple-next" data-carousel="female" aria-label="Следующий слайд">&#10095;</button>
+                    </div>
+                    <div class="simple-dots" data-dots="female"></div>
+                </div>
+
+                <!-- Мужские образы -->
+                <div class="carousel-section carousel-section--male">
+                    <h3 class="carousel-title">Мужские образы</h3>
+                    <p class="dresscode-caption">В образах будут уместны чёрные и белые акценты.</p>
+                    <div class="simple-carousel">
+                        <button class="simple-prev" data-carousel="male" aria-label="Предыдущий слайд">&#10094;</button>
+                        <div class="simple-track" data-track="male">
+                            <div class="simple-slide"><img src="img/dresscode/man1.jpg" alt="Мужской образ 1" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man2.jpg" alt="Мужской образ 2" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man3.jpg" alt="Мужской образ 3" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man4.jpg" alt="Мужской образ 4" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man5.jpg" alt="Мужской образ 5" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man6.jpg" alt="Мужской образ 6" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man7.jpg" alt="Мужской образ 7" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man8.jpg" alt="Мужской образ 8" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man9.jpg" alt="Мужской образ 9" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man10.jpg" alt="Мужской образ 10" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man11.jpg" alt="Мужской образ 11" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man12.jpg" alt="Мужской образ 12" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man13.jpg" alt="Мужской образ 13" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man14.jpg" alt="Мужской образ 14" loading="lazy"></div>
+                            <div class="simple-slide"><img src="img/dresscode/man15.jpg" alt="Мужской образ 15" loading="lazy"></div>
+                        </div>
+                        <button class="simple-next" data-carousel="male" aria-label="Следующий слайд">&#10095;</button>
+                    </div>
+                    <div class="simple-dots" data-dots="male"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Организационные моменты -->
+        <section class="info">
+            <div class="container">
+                <h2 class="section-title">Детали</h2>
+                <p class="info-subtitle">
+                    После приглашения у вас могли появиться вопросы — здесь мы собрали самые важные детали нашего дня
+                </p>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 10h16v10H4z"></path>
+                                <path d="M12 10v10"></path>
+                                <path d="M2.5 6.5h19v3.5h-19z"></path>
+                                <path d="M12 6.5H8.8a2 2 0 1 1 0-4c2 0 3.2 2.3 3.2 4Z"></path>
+                                <path d="M12 6.5h3.2a2 2 0 1 0 0-4c-2 0-3.2 2.3-3.2 4Z"></path>
+                            </svg>
+                        </div>
+                        <div class="info-content">
+                            <h3>О подарках</h3>
+                            <p>Пожалуйста, не ломайте голову над подарком: ваше присутствие — уже радость, а самым практичным и желанным дополнением для нас станет денежный вклад в наши общие мечты.</p>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 20v-6.5"></path>
+                                <path d="M11.8 13c-3 0-5.3-2.3-5.3-5.3 3 0 5.3 2.3 5.3 5.3Z"></path>
+                                <path d="M12.2 15c0-3 2.3-5.3 5.3-5.3 0 3-2.3 5.3-5.3 5.3Z"></path>
+                            </svg>
+                        </div>
+                        <div class="info-content">
+                            <h3>О цветах</h3>
+                            <p>Мы решили отказаться от цветов — в жаркий день они слишком быстро завянут.
+А если захотите дополнить поздравление, будем рады бутылочке вашего любимого напитка и, по желанию, записке о том, когда открыть её в будущем.</p>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="8.2" r="2.8"></circle>
+                                <path d="M8.6 20v-2.3a3.4 3.4 0 0 1 6.8 0V20"></path>
+                                <path d="M9.5 13.2h5"></path>
+                            </svg>
+                        </div>
+                        <div class="info-content">
+                            <h3>О детях</h3>
+                            <p>Наш праздник не предполагает программы для детей, а день обещает быть долгим и насыщенным, поэтому маленьким гостям может быть утомительно и скучновато.
+Если у вас есть возможность, приходите, пожалуйста, без малышей - устройте себе маленький выходной и посвятите этот день отдыху, нам и друг другу. Но если такой возможности нет, конечно, будем рады видеть вас вместе.</p>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 3.5h10v3a5 5 0 0 1-10 0z"></path>
+                                <path d="M12 11.5v6"></path>
+                                <path d="M9 20.5h6"></path>
+                                <path d="M5.5 3.5h13"></path>
+                            </svg>
+                        </div>
+                        <div class="info-content">
+                            <h3>О формате праздника</h3>
+                            <p>Мы будем благодарны, если в этот вечер обойдётся без криков «Горько!», а тёплые слова будут звучать только по желанию, без подготовки и волнений — отдельного времени для тостов и слов в микрофон мы не планируем, зато всё, что захочется сказать, можно будет сказать нам лично.
+Если вы захотите устроить для нас сюрприз, пожалуйста, заранее согласуйте его с организатором — контакты будут ниже.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="photo-interlude" aria-label="Нежная деталь с руками">
+            <div class="container">
+                <figure class="photo-interlude__frame">
+                    <img src="img/ruki1.JPG" alt="Руки Павла и Ксении" class="photo-interlude__image" loading="lazy" width="1000" height="260">
+                </figure>
+            </div>
+        </section>
+
+        <!-- Форма подтверждения (RSVP) -->
+        <section class="rsvp">
+            <div class="container">
+                <h2 class="section-title">Анкета</h2>
+                <p class="rsvp-subtitle">
+                    Пожалуйста, подтвердите свое присутствие
+                    <span class="rsvp-subtitle__date">до 15 июня</span>
+                </p>
+                <form id="weddingForm" class="rsvp-form" method="POST"
+                    action="https://script.google.com/macros/s/AKfycbwGPa7A1HU_8YB08PgRquDObEQp7ESOfd39xh5Nvh4gnz0CiDIHRPWy6DWd9_hep5T3-w/exec">
+                    <div class="form-group">
+                        <label for="name">Ваше имя и фамилия *</label>
+                        <input type="text" id="name" name="name" required placeholder="Например: Иван Петров">
+                    </div>
+                    <div class="form-group">
+                        <label for="attendance">Сможете присутствовать? *</label>
+                        <select id="attendance" name="attendance" required>
+                            <option value="">Выберите...</option>
+                            <option value="yes">Да, с радостью</option>
+                            <option value="maybe">Пока не знаю</option>
+                            <option value="no">Нет, к сожалению</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="guests">Количество гостей (включая вас) *</label>
+                        <input type="number" id="guests" name="guests" min="1" max="5" value="1" required>
+                    </div>
+                    <div class="form-group is-hidden" id="companionsGroup">
+                        <label for="companions" id="companionsLabel">Имя и фамилия остальных гостей *</label>
+                        <textarea id="companions" name="companions" rows="2" placeholder="Например: Анна Петрова, Сергей Иванов"></textarea>
+                    </div>
+                    <div class="form-group" id="drinksSection">
+                        <span class="form-label">Какие напитки вы предпочитаете?</span>
+                        <p class="form-hint">Можно выбрать несколько вариантов</p>
+                        <div class="checkbox-group" id="drinksGroup">
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="Белое вино">
+                                <span>Белое вино</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="Красное вино">
+                                <span>Красное вино</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="Игристое">
+                                <span>Игристое</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="Водка">
+                                <span>Водка</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="Виски">
+                                <span>Виски</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="Коньяк">
+                                <span>Коньяк</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="Безалкогольные напитки">
+                                <span>Безалкогольные напитки</span>
+                            </label>
+                        </div>
+                        <input type="hidden" id="drinks" name="drinks" value="">
+                    </div>
+                    <div class="form-group" id="dietGroup">
+                        <label for="diet">Особенности питания (аллергии и т.д.)</label>
+                        <textarea id="diet" name="diet" rows="2" placeholder="Например: не ем мясо..."></textarea>
+                    </div>
+                    <div class="form-group" id="wishesGroup">
+                        <label for="wishes">Комментарий</label>
+                        <textarea id="wishes" name="wishes" rows="3" placeholder="Если хотите, оставьте комментарий"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submitBtn">Отправить</button>
+                    <div id="formMessage" class="form-message"></div>
+                </form>
+                <div id="formSuccessNote" class="form-success-note is-hidden">
+                    <h3>Спасибо!</h3>
+                    <p>Ваш ответ успешно отправлен. Мы получили вашу анкету.</p>
+                    <button type="button" class="success-reset-btn" id="resetFormBtn">Заполнить заново</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Контакты организатора -->
+        <section class="organizer-contact">
+            <div class="container">
+                <h2 class="section-title">Контакты организатора</h2>
+                <div class="organizer-contact__text">
+                    <p>Если у вас возникнут какие-либо вопросы по празднику, вы можете обратиться к нам или к нашему организатору Екатерине.</p>
+                    <p>Мы поможем, подскажем и сориентируем по всем важным моментам.</p>
+                </div>
+                <figure class="organizer-contact__photo">
+                    <img src="img/org.JPG" alt="Организатор Екатерина" class="organizer-contact__image" loading="lazy" width="720" height="720">
+                </figure>
+                <div class="organizer-contact__details">
+                    <p class="organizer-contact__name">Екатерина, организатор</p>
+                    <div class="organizer-contact__actions">
+                        <a href="tel:+79867477480" class="map-button organizer-contact__button">
+                            <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M5 4.5h4l2 5-2.6 1.7a14.4 14.4 0 0 0 4.4 4.4L14.5 13l5 2v4a2 2 0 0 1-2.2 2A16.8 16.8 0 0 1 3 6.7 2 2 0 0 1 5 4.5Z"></path>
+                            </svg>
+                            +7 986 747 7480
+                        </a>
+                        <a href="https://vk.ru/ashitok.kate" class="map-button organizer-contact__button" target="_blank" rel="noopener noreferrer">
+                            <svg class="icon icon--fill" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4.7 7.8h3.1c.1 0 .3.1.3.2.3 1 .8 1.9 1.5 2.8.7.8 1.2 1.1 1.5 1.1.2 0 .3-.2.3-.5V8.2c0-.2.2-.4.4-.4h2.8c.2 0 .4.2.4.4v3c0 .2.1.3.3.3.2 0 .6-.3 1.2-.9.7-.7 1.3-1.6 1.7-2.6.1-.2.2-.2.4-.2h3.1c.2 0 .3 0 .4.1.1.1.1.2.1.4-.1.6-.7 1.6-1.7 3-.5.6-.8 1-.8 1.2 0 .1.1.3.4.6.2.2.4.4.6.6.8.8 1.4 1.5 1.7 2.1.1.2.1.4 0 .6-.1.1-.3.2-.6.2h-2.8c-.3 0-.6-.1-.8-.3l-1.3-1.3c-.4-.4-.6-.5-.9-.5-.2 0-.3.2-.3.5v1.1c0 .3-.1.5-.2.7-.1.1-.3.2-.6.2h-1.3c-1.1 0-2.2-.4-3.2-1.1-1-.7-1.9-1.7-2.7-2.9C5.1 11.1 4.6 9.5 4.4 8c0-.1 0-.2.1-.3.1 0 .1-.1.2-.1Z"></path>
+                            </svg>
+                            Написать в VK
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Таймер обратного отсчета -->
+        <section class="timer-section">
+            <div class="container">
+                <h2 class="section-title">До события осталось</h2>
+                <div class="timer" id="timer">
+                    <div class="timer-item">
+                        <span class="timer-number" id="days">00</span>
+                        <span class="timer-label">дней</span>
+                    </div>
+                    <div class="timer-item">
+                        <span class="timer-number" id="hours">00</span>
+                        <span class="timer-label">часов</span>
+                    </div>
+                    <div class="timer-item">
+                        <span class="timer-number" id="minutes">00</span>
+                        <span class="timer-label">минут</span>
+                    </div>
+                    <div class="timer-item">
+                        <span class="timer-number" id="seconds">00</span>
+                        <span class="timer-label">секунд</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Подвал -->
+        <footer>
+            <p class="footer-signature">
+                <span>С любовью,</span>
+                <span>Павел и Ксения 🤍</span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
