@@ -3,7 +3,82 @@
 }
 
 function resetPageScroll() {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    } catch (error) {
+        window.scrollTo(0, 0);
+    }
+}
+
+function formatTimerUnit(value) {
+    return value < 10 ? `0${value}` : `${value}`;
+}
+
+function getStorageItem(key) {
+    try {
+        return sessionStorage.getItem(key);
+    } catch (error) {
+        return null;
+    }
+}
+
+function setStorageItem(key, value) {
+    try {
+        sessionStorage.setItem(key, value);
+    } catch (error) {
+        // Ignore storage failures in older Safari private mode.
+    }
+}
+
+function removeStorageItem(key) {
+    try {
+        sessionStorage.removeItem(key);
+    } catch (error) {
+        // Ignore storage failures in older Safari private mode.
+    }
+}
+
+function supportsIntersectionObserver() {
+    return typeof window.IntersectionObserver === 'function';
+}
+
+function getClosestElement(element, selector) {
+    if (!element) return null;
+    if (typeof element.closest === 'function') {
+        return element.closest(selector);
+    }
+
+    const matcher = Element.prototype.matches
+        || Element.prototype.msMatchesSelector
+        || Element.prototype.webkitMatchesSelector;
+    let current = element;
+
+    while (current && current.nodeType === 1) {
+        if (matcher && matcher.call(current, selector)) {
+            return current;
+        }
+        current = current.parentElement;
+    }
+
+    return null;
+}
+
+function scrollElementTo(track, left, behavior) {
+    const safeLeft = Math.max(0, left);
+
+    if (typeof track.scrollTo === 'function') {
+        try {
+            track.scrollTo({
+                left: safeLeft,
+                behavior: behavior
+            });
+            return;
+        } catch (error) {
+            // Fallback for older Safari that supports only numeric arguments.
+        }
+    }
+
+    track.scrollLeft = safeLeft;
 }
 
 // ===== ТАЙМЕР ОБРАТНОГО ОТСЧЕТА =====
@@ -32,10 +107,10 @@ function updateTimer() {
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
     
-    daysEl.textContent = days.toString().padStart(2, '0');
-    hoursEl.textContent = hours.toString().padStart(2, '0');
-    minutesEl.textContent = minutes.toString().padStart(2, '0');
-    secondsEl.textContent = seconds.toString().padStart(2, '0');
+    daysEl.textContent = formatTimerUnit(days);
+    hoursEl.textContent = formatTimerUnit(hours);
+    minutesEl.textContent = formatTimerUnit(minutes);
+    secondsEl.textContent = formatTimerUnit(seconds);
 }
 
 updateTimer();
@@ -51,9 +126,9 @@ class EnvelopeIntro {
         this.root = root;
         this.onOpenComplete = onOpenComplete;
         this.storageKey = storageKey;
-        this.trigger = root?.querySelector('#envelopeTrigger');
-        this.button = root?.querySelector('#envelopeOpenButton');
-        this.panel = root?.querySelector('.envelope-intro__panel');
+        this.trigger = root ? root.querySelector('#envelopeTrigger') : null;
+        this.button = root ? root.querySelector('#envelopeOpenButton') : null;
+        this.panel = root ? root.querySelector('.envelope-intro__panel') : null;
         this.isOpened = false;
         this.isAnimating = false;
         this.openTimeout = null;
@@ -61,7 +136,7 @@ class EnvelopeIntro {
 
         if (!this.root || !this.trigger || !this.button || !this.panel) return;
 
-        if (sessionStorage.getItem(this.storageKey) === '1') {
+        if (getStorageItem(this.storageKey) === '1') {
             this.finishImmediately();
             return;
         }
@@ -94,7 +169,9 @@ class EnvelopeIntro {
         this.button.addEventListener('click', this.handleOpen);
         this.trigger.addEventListener('keydown', this.handleKeydown);
         window.addEventListener('resize', this.handleResize, { passive: true });
-        window.visualViewport?.addEventListener('resize', this.handleResize, { passive: true });
+        if (window.visualViewport && typeof window.visualViewport.addEventListener === 'function') {
+            window.visualViewport.addEventListener('resize', this.handleResize, { passive: true });
+        }
     }
 
     setResponsiveScale() {
@@ -144,7 +221,7 @@ class EnvelopeIntro {
 
         this.isOpened = true;
         this.isAnimating = false;
-        sessionStorage.setItem(this.storageKey, '1');
+        setStorageItem(this.storageKey, '1');
         document.body.classList.remove('intro-active');
 
         this.root.setAttribute('aria-hidden', 'true');
@@ -175,7 +252,7 @@ function initEnvelopeIntro() {
     // Reset intro state on full page leave/reload so the envelope
     // appears again after a manual refresh.
     window.addEventListener('pagehide', () => {
-        sessionStorage.removeItem('wedding-envelope-intro-opened');
+        removeStorageItem('wedding-envelope-intro-opened');
     });
 
     return new EnvelopeIntro({
@@ -188,7 +265,7 @@ function initEnvelopeIntro() {
 
 function initBackgroundVideoFallback() {
     const background = document.querySelector('.site-background');
-    const video = background?.querySelector('.site-background-video');
+    const video = background ? background.querySelector('.site-background-video') : null;
 
     if (!background || !video) return;
 
@@ -198,7 +275,7 @@ function initBackgroundVideoFallback() {
         background.classList.toggle('is-static', isStatic);
     }
 
-    async function tryStartVideo() {
+    function tryStartVideo() {
         if (playAttemptInFlight) return;
         playAttemptInFlight = true;
 
@@ -206,17 +283,28 @@ function initBackgroundVideoFallback() {
             const playResult = video.play();
 
             if (playResult && typeof playResult.then === 'function') {
-                await playResult;
+                playResult
+                    .then(function() {
+                        window.setTimeout(function() {
+                            setStaticBackground(video.paused || video.readyState < 2);
+                        }, 180);
+                        playAttemptInFlight = false;
+                    })
+                    .catch(function() {
+                        setStaticBackground(true);
+                        playAttemptInFlight = false;
+                    });
+                return;
             }
 
-            window.setTimeout(() => {
+            window.setTimeout(function() {
                 setStaticBackground(video.paused || video.readyState < 2);
             }, 180);
         } catch (error) {
             setStaticBackground(true);
-        } finally {
-            playAttemptInFlight = false;
         }
+
+        playAttemptInFlight = false;
     }
 
     function syncBackgroundState() {
@@ -228,12 +316,16 @@ function initBackgroundVideoFallback() {
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
 
-    video.addEventListener('playing', () => setStaticBackground(false));
+    video.addEventListener('playing', function() {
+        setStaticBackground(false);
+    });
     video.addEventListener('canplay', syncBackgroundState);
     video.addEventListener('pause', syncBackgroundState);
-    video.addEventListener('stalled', () => setStaticBackground(true));
+    video.addEventListener('stalled', function() {
+        setStaticBackground(true);
+    });
     video.addEventListener('suspend', syncBackgroundState);
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'visible') {
             tryStartVideo();
         }
@@ -273,10 +365,15 @@ function initMusicPlayer() {
 
     }
 
-    button.addEventListener('click', async () => {
+    button.addEventListener('click', function() {
         if (audio.paused) {
             try {
-                await audio.play();
+                const playResult = audio.play();
+                if (playResult && typeof playResult.catch === 'function') {
+                    playResult.catch(function() {
+                        button.setAttribute('aria-label', 'Не удалось включить музыку');
+                    });
+                }
             } catch (error) {
                 button.setAttribute('aria-label', 'Не удалось включить музыку');
             }
@@ -286,11 +383,20 @@ function initMusicPlayer() {
         audio.pause();
     });
 
-    audio.addEventListener('play', () => setPlayerState(true));
-    audio.addEventListener('pause', () => setPlayerState(false));
-    audio.addEventListener('ended', () => {
+    audio.addEventListener('play', function() {
+        setPlayerState(true);
+    });
+    audio.addEventListener('pause', function() {
+        setPlayerState(false);
+    });
+    audio.addEventListener('ended', function() {
         audio.currentTime = 0;
-        audio.play().catch(() => setPlayerState(false));
+        const restartPlayback = audio.play();
+        if (restartPlayback && typeof restartPlayback.catch === 'function') {
+            restartPlayback.catch(function() {
+                setPlayerState(false);
+            });
+        }
     });
     setPlayerState(false);
 }
@@ -439,41 +545,54 @@ document.addEventListener('DOMContentLoaded', function() {
     const timelineItems = document.querySelectorAll('.timeline-item');
     
     if (timeline && hearts.length) {
-        const observerTimeline = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        timeline.classList.add('animate');
-                    }, 200);
-                    
-                    hearts.forEach((heart, index) => {
+        if (supportsIntersectionObserver()) {
+            const observerTimeline = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
                         setTimeout(() => {
-                            heart.classList.add('animate');
-                        }, 300 + (index * 80));
-                    });
-                    
-                    observerTimeline.unobserve(entry.target);
-                }
+                            timeline.classList.add('animate');
+                        }, 200);
+                        
+                        hearts.forEach((heart, index) => {
+                            setTimeout(() => {
+                                heart.classList.add('animate');
+                            }, 300 + (index * 80));
+                        });
+                        
+                        observerTimeline.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            observerTimeline.observe(timeline);
+        } else {
+            timeline.classList.add('animate');
+            hearts.forEach((heart) => {
+                heart.classList.add('animate');
             });
-        }, { threshold: 0.2 });
-        
-        observerTimeline.observe(timeline);
+        }
     }
     
     if (timelineItems.length) {
-        const observerItems = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, 100);
-                }
+        if (supportsIntersectionObserver()) {
+            const observerItems = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, 100);
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            timelineItems.forEach(item => {
+                observerItems.observe(item);
             });
-        }, { threshold: 0.3 });
-        
-        timelineItems.forEach(item => {
-            observerItems.observe(item);
-        });
+        } else {
+            timelineItems.forEach((item) => {
+                item.classList.add('visible');
+            });
+        }
     }
 
     const timelinePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -567,17 +686,23 @@ function initInfoItemsAnimation() {
     const isMobile = window.innerWidth <= 768;
     
     if (isMobile) {
-        const observerInfo = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible-mobile');
-                }
+        if (supportsIntersectionObserver()) {
+            const observerInfo = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible-mobile');
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            infoItems.forEach(item => {
+                observerInfo.observe(item);
             });
-        }, { threshold: 0.3 });
-        
-        infoItems.forEach(item => {
-            observerInfo.observe(item);
-        });
+        } else {
+            infoItems.forEach((item) => {
+                item.classList.add('visible-mobile');
+            });
+        }
     }
 }
 
@@ -591,18 +716,24 @@ window.addEventListener('resize', function() {
         infoItems.forEach(item => {
             item.classList.remove('visible-mobile');
         });
-        
-        const observerInfo = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible-mobile');
-                }
+
+        if (supportsIntersectionObserver()) {
+            const observerInfo = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible-mobile');
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            infoItems.forEach(item => {
+                observerInfo.observe(item);
             });
-        }, { threshold: 0.3 });
-        
-        infoItems.forEach(item => {
-            observerInfo.observe(item);
-        });
+        } else {
+            infoItems.forEach((item) => {
+                item.classList.add('visible-mobile');
+            });
+        }
     } else {
         infoItems.forEach(item => {
             item.classList.remove('visible-mobile');
@@ -615,6 +746,8 @@ function initScrollAnimation() {
     const blocks = document.querySelectorAll('.organizer-contact, .timer-section, .calendar-section, .schedule, .location, .dresscode, .info, .photo-interlude, .rsvp');
     
     if (!blocks.length) return;
+
+    document.body.classList.add('has-scroll-animation');
 
     function updateBlockVisibility() {
         const viewportHeight = window.innerHeight;
@@ -657,7 +790,8 @@ function initSimpleCarousel() {
     }
 
     function getDotsContainer(track) {
-        return track.closest('.carousel-section')?.querySelector('.simple-dots') || null;
+        const carouselSection = getClosestElement(track, '.carousel-section');
+        return carouselSection ? carouselSection.querySelector('.simple-dots') : null;
     }
 
     function getCenteredIndex(track) {
@@ -706,10 +840,7 @@ function initSimpleCarousel() {
         const slide = slides[safeIndex];
         const targetLeft = slide.offsetLeft - ((track.clientWidth - slide.offsetWidth) / 2);
 
-        track.scrollTo({
-            left: Math.max(0, targetLeft),
-            behavior: smooth ? 'smooth' : 'auto'
-        });
+        scrollElementTo(track, targetLeft, smooth ? 'smooth' : 'auto');
 
         updateDots(track, safeIndex);
         updateActiveSlide(track, safeIndex);
