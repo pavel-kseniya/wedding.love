@@ -51,9 +51,9 @@ class EnvelopeIntro {
         this.root = root;
         this.onOpenComplete = onOpenComplete;
         this.storageKey = storageKey;
-        this.trigger = root?.querySelector('#envelopeTrigger');
-        this.button = root?.querySelector('#envelopeOpenButton');
-        this.panel = root?.querySelector('.envelope-intro__panel');
+        this.trigger = root ? root.querySelector('#envelopeTrigger') : null;
+        this.button = root ? root.querySelector('#envelopeOpenButton') : null;
+        this.panel = root ? root.querySelector('.envelope-intro__panel') : null;
         this.isOpened = false;
         this.isAnimating = false;
         this.openTimeout = null;
@@ -94,7 +94,9 @@ class EnvelopeIntro {
         this.button.addEventListener('click', this.handleOpen);
         this.trigger.addEventListener('keydown', this.handleKeydown);
         window.addEventListener('resize', this.handleResize, { passive: true });
-        window.visualViewport?.addEventListener('resize', this.handleResize, { passive: true });
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', this.handleResize, { passive: true });
+        }
     }
 
     setResponsiveScale() {
@@ -188,7 +190,7 @@ function initEnvelopeIntro() {
 
 function initBackgroundVideoFallback() {
     const background = document.querySelector('.site-background');
-    const video = background?.querySelector('.site-background-video');
+    const video = background ? background.querySelector('.site-background-video') : null;
 
     if (!background || !video) return;
 
@@ -657,7 +659,8 @@ function initSimpleCarousel() {
     }
 
     function getDotsContainer(track) {
-        return track.closest('.carousel-section')?.querySelector('.simple-dots') || null;
+        const section = track.closest('.carousel-section');
+        return section ? section.querySelector('.simple-dots') : null;
     }
 
     function getCenteredIndex(track) {
