@@ -50,6 +50,15 @@ function revealAll(elements, className) {
     });
 }
 
+function onDocumentReady(callback) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', callback);
+        return;
+    }
+
+    callback();
+}
+
 // ===== ТАЙМЕР ОБРАТНОГО ОТСЧЕТА =====
 function updateTimer() {
     const weddingDate = new Date(2026, 7, 2, 15, 0);
@@ -228,6 +237,15 @@ function initEnvelopeIntro() {
         root: introRoot,
         onOpenComplete: () => {
             document.body.classList.remove('intro-active');
+            if (window.requestAnimationFrame) {
+                window.requestAnimationFrame(function() {
+                    if (typeof window.__refreshScrollAnimations === 'function') {
+                        window.__refreshScrollAnimations();
+                    }
+                });
+            } else if (typeof window.__refreshScrollAnimations === 'function') {
+                window.__refreshScrollAnimations();
+            }
         }
     });
 }
@@ -304,7 +322,7 @@ function initBackgroundVideoFallback() {
     window.setTimeout(tryStartVideo, 160);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+onDocumentReady(() => {
     initBackgroundVideoFallback();
     initEnvelopeIntro();
     initMusicPlayer();
@@ -699,6 +717,8 @@ function initScrollAnimation() {
     
     if (!blocks.length) return;
 
+    let fallbackRevealTimer = null;
+
     function updateBlockVisibility() {
         const viewportHeight = window.innerHeight;
         const showTop = viewportHeight * 0.14;
@@ -728,9 +748,32 @@ function initScrollAnimation() {
         });
     }
 
+    function refreshBlockVisibility() {
+        updateBlockVisibility();
+
+        window.setTimeout(updateBlockVisibility, 120);
+        window.setTimeout(updateBlockVisibility, 420);
+        window.setTimeout(updateBlockVisibility, 900);
+
+        if (fallbackRevealTimer !== null) {
+            window.clearTimeout(fallbackRevealTimer);
+        }
+
+        fallbackRevealTimer = window.setTimeout(function() {
+            const hasVisibleBlocks = Array.prototype.some.call(blocks, function(block) {
+                return block.classList.contains('visible-scroll');
+            });
+
+            if (!hasVisibleBlocks) {
+                revealAll(blocks, 'visible-scroll');
+            }
+        }, 1100);
+    }
+
     window.addEventListener('scroll', updateBlockVisibility, { passive: true });
     window.addEventListener('resize', updateBlockVisibility);
-    updateBlockVisibility();
+    window.__refreshScrollAnimations = refreshBlockVisibility;
+    refreshBlockVisibility();
 }
 
 // ===== ПРОСТАЯ КАРУСЕЛЬ (100% РАБОТАЕТ) =====
@@ -879,12 +922,5 @@ function initSimpleCarousel() {
     if (femaleTrack) setupCarousel(femaleTrack, femalePrev, femaleNext);
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSimpleCarousel);
-} else {
-    initSimpleCarousel();
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    initScrollAnimation();
-});
+onDocumentReady(initSimpleCarousel);
+onDocumentReady(initScrollAnimation);
