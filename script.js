@@ -1,62 +1,9 @@
-﻿if (document.body) {
-    document.body.classList.add('js-enhanced');
-}
-
-if (!String.prototype.padStart) {
-    String.prototype.padStart = function padStart(targetLength, padString) {
-        var output = String(this);
-        var fill = String(padString || ' ');
-
-        while (output.length < targetLength) {
-            output = fill + output;
-        }
-
-        return output.slice(-targetLength);
-    };
-}
-
-if (window.Element && !Element.prototype.matches) {
-    Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
-}
-
-if (window.Element && !Element.prototype.closest) {
-    Element.prototype.closest = function closest(selector) {
-        var current = this;
-
-        while (current && current.nodeType === 1) {
-            if (current.matches(selector)) return current;
-            current = current.parentElement || current.parentNode;
-        }
-
-        return null;
-    };
-}
-
-if ('scrollRestoration' in history) {
+﻿if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
 
 function resetPageScroll() {
-    try {
-        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    } catch (error) {
-        window.scrollTo(0, 0);
-    }
-}
-
-function revealAll(elements, className) {
-    Array.prototype.forEach.call(elements, function(element) {
-        element.classList.add(className);
-    });
-}
-
-function onDocumentReady(callback) {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', callback);
-        return;
-    }
-
-    callback();
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
 }
 
 // ===== ТАЙМЕР ОБРАТНОГО ОТСЧЕТА =====
@@ -104,9 +51,9 @@ class EnvelopeIntro {
         this.root = root;
         this.onOpenComplete = onOpenComplete;
         this.storageKey = storageKey;
-        this.trigger = root ? root.querySelector('#envelopeTrigger') : null;
-        this.button = root ? root.querySelector('#envelopeOpenButton') : null;
-        this.panel = root ? root.querySelector('.envelope-intro__panel') : null;
+        this.trigger = root?.querySelector('#envelopeTrigger');
+        this.button = root?.querySelector('#envelopeOpenButton');
+        this.panel = root?.querySelector('.envelope-intro__panel');
         this.isOpened = false;
         this.isAnimating = false;
         this.openTimeout = null;
@@ -147,9 +94,7 @@ class EnvelopeIntro {
         this.button.addEventListener('click', this.handleOpen);
         this.trigger.addEventListener('keydown', this.handleKeydown);
         window.addEventListener('resize', this.handleResize, { passive: true });
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', this.handleResize, { passive: true });
-        }
+        window.visualViewport?.addEventListener('resize', this.handleResize, { passive: true });
     }
 
     setResponsiveScale() {
@@ -237,22 +182,13 @@ function initEnvelopeIntro() {
         root: introRoot,
         onOpenComplete: () => {
             document.body.classList.remove('intro-active');
-            if (window.requestAnimationFrame) {
-                window.requestAnimationFrame(function() {
-                    if (typeof window.__refreshScrollAnimations === 'function') {
-                        window.__refreshScrollAnimations();
-                    }
-                });
-            } else if (typeof window.__refreshScrollAnimations === 'function') {
-                window.__refreshScrollAnimations();
-            }
         }
     });
 }
 
 function initBackgroundVideoFallback() {
     const background = document.querySelector('.site-background');
-    const video = background ? background.querySelector('.site-background-video') : null;
+    const video = background?.querySelector('.site-background-video');
 
     if (!background || !video) return;
 
@@ -262,37 +198,24 @@ function initBackgroundVideoFallback() {
         background.classList.toggle('is-static', isStatic);
     }
 
-    function tryStartVideo() {
+    async function tryStartVideo() {
         if (playAttemptInFlight) return;
         playAttemptInFlight = true;
-
-        function finishAttempt() {
-            playAttemptInFlight = false;
-        }
 
         try {
             const playResult = video.play();
 
             if (playResult && typeof playResult.then === 'function') {
-                playResult.then(function() {
-                    window.setTimeout(function() {
-                        setStaticBackground(video.paused || video.readyState < 2);
-                        finishAttempt();
-                    }, 180);
-                }).catch(function() {
-                    setStaticBackground(true);
-                    finishAttempt();
-                });
-                return;
+                await playResult;
             }
 
-            window.setTimeout(function() {
+            window.setTimeout(() => {
                 setStaticBackground(video.paused || video.readyState < 2);
-                finishAttempt();
             }, 180);
         } catch (error) {
             setStaticBackground(true);
-            finishAttempt();
+        } finally {
+            playAttemptInFlight = false;
         }
     }
 
@@ -322,7 +245,7 @@ function initBackgroundVideoFallback() {
     window.setTimeout(tryStartVideo, 160);
 }
 
-onDocumentReady(() => {
+document.addEventListener('DOMContentLoaded', () => {
     initBackgroundVideoFallback();
     initEnvelopeIntro();
     initMusicPlayer();
@@ -350,16 +273,10 @@ function initMusicPlayer() {
 
     }
 
-    button.addEventListener('click', function() {
+    button.addEventListener('click', async () => {
         if (audio.paused) {
             try {
-                var playResult = audio.play();
-
-                if (playResult && typeof playResult.catch === 'function') {
-                    playResult.catch(function() {
-                        button.setAttribute('aria-label', 'Не удалось включить музыку');
-                    });
-                }
+                await audio.play();
             } catch (error) {
                 button.setAttribute('aria-label', 'Не удалось включить музыку');
             }
@@ -520,53 +437,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const timeline = document.querySelector('.timeline');
     const hearts = document.querySelectorAll('.timeline-heart');
     const timelineItems = document.querySelectorAll('.timeline-item');
-    const hasIntersectionObserver = 'IntersectionObserver' in window;
     
     if (timeline && hearts.length) {
-        if (!hasIntersectionObserver) {
-            timeline.classList.add('animate');
-            revealAll(hearts, 'animate');
-        } else {
-            const observerTimeline = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
+        const observerTimeline = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        timeline.classList.add('animate');
+                    }, 200);
+                    
+                    hearts.forEach((heart, index) => {
                         setTimeout(() => {
-                            timeline.classList.add('animate');
-                        }, 200);
-                        
-                        hearts.forEach((heart, index) => {
-                            setTimeout(() => {
-                                heart.classList.add('animate');
-                            }, 300 + (index * 80));
-                        });
-                        
-                        observerTimeline.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.2 });
-            
-            observerTimeline.observe(timeline);
-        }
+                            heart.classList.add('animate');
+                        }, 300 + (index * 80));
+                    });
+                    
+                    observerTimeline.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        observerTimeline.observe(timeline);
     }
     
     if (timelineItems.length) {
-        if (!hasIntersectionObserver) {
-            revealAll(timelineItems, 'visible');
-        } else {
-            const observerItems = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => {
-                            entry.target.classList.add('visible');
-                        }, 100);
-                    }
-                });
-            }, { threshold: 0.3 });
-            
-            timelineItems.forEach(item => {
-                observerItems.observe(item);
+        const observerItems = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, 100);
+                }
             });
-        }
+        }, { threshold: 0.3 });
+        
+        timelineItems.forEach(item => {
+            observerItems.observe(item);
+        });
     }
 
     const timelinePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -660,21 +567,17 @@ function initInfoItemsAnimation() {
     const isMobile = window.innerWidth <= 768;
     
     if (isMobile) {
-        if (!('IntersectionObserver' in window)) {
-            revealAll(infoItems, 'visible-mobile');
-        } else {
-            const observerInfo = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible-mobile');
-                    }
-                });
-            }, { threshold: 0.3 });
-            
-            infoItems.forEach(item => {
-                observerInfo.observe(item);
+        const observerInfo = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible-mobile');
+                }
             });
-        }
+        }, { threshold: 0.3 });
+        
+        infoItems.forEach(item => {
+            observerInfo.observe(item);
+        });
     }
 }
 
@@ -689,21 +592,17 @@ window.addEventListener('resize', function() {
             item.classList.remove('visible-mobile');
         });
         
-        if (!('IntersectionObserver' in window)) {
-            revealAll(infoItems, 'visible-mobile');
-        } else {
-            const observerInfo = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible-mobile');
-                    }
-                });
-            }, { threshold: 0.3 });
-            
-            infoItems.forEach(item => {
-                observerInfo.observe(item);
+        const observerInfo = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible-mobile');
+                }
             });
-        }
+        }, { threshold: 0.3 });
+        
+        infoItems.forEach(item => {
+            observerInfo.observe(item);
+        });
     } else {
         infoItems.forEach(item => {
             item.classList.remove('visible-mobile');
@@ -716,8 +615,6 @@ function initScrollAnimation() {
     const blocks = document.querySelectorAll('.organizer-contact, .timer-section, .calendar-section, .schedule, .location, .dresscode, .info, .photo-interlude, .rsvp');
     
     if (!blocks.length) return;
-
-    let fallbackRevealTimer = null;
 
     function updateBlockVisibility() {
         const viewportHeight = window.innerHeight;
@@ -748,32 +645,9 @@ function initScrollAnimation() {
         });
     }
 
-    function refreshBlockVisibility() {
-        updateBlockVisibility();
-
-        window.setTimeout(updateBlockVisibility, 120);
-        window.setTimeout(updateBlockVisibility, 420);
-        window.setTimeout(updateBlockVisibility, 900);
-
-        if (fallbackRevealTimer !== null) {
-            window.clearTimeout(fallbackRevealTimer);
-        }
-
-        fallbackRevealTimer = window.setTimeout(function() {
-            const hasVisibleBlocks = Array.prototype.some.call(blocks, function(block) {
-                return block.classList.contains('visible-scroll');
-            });
-
-            if (!hasVisibleBlocks) {
-                revealAll(blocks, 'visible-scroll');
-            }
-        }, 1100);
-    }
-
     window.addEventListener('scroll', updateBlockVisibility, { passive: true });
     window.addEventListener('resize', updateBlockVisibility);
-    window.__refreshScrollAnimations = refreshBlockVisibility;
-    refreshBlockVisibility();
+    updateBlockVisibility();
 }
 
 // ===== ПРОСТАЯ КАРУСЕЛЬ (100% РАБОТАЕТ) =====
@@ -783,8 +657,7 @@ function initSimpleCarousel() {
     }
 
     function getDotsContainer(track) {
-        var section = track.closest('.carousel-section');
-        return section ? section.querySelector('.simple-dots') : null;
+        return track.closest('.carousel-section')?.querySelector('.simple-dots') || null;
     }
 
     function getCenteredIndex(track) {
@@ -833,14 +706,10 @@ function initSimpleCarousel() {
         const slide = slides[safeIndex];
         const targetLeft = slide.offsetLeft - ((track.clientWidth - slide.offsetWidth) / 2);
 
-        try {
-            track.scrollTo({
-                left: Math.max(0, targetLeft),
-                behavior: smooth ? 'smooth' : 'auto'
-            });
-        } catch (error) {
-            track.scrollLeft = Math.max(0, targetLeft);
-        }
+        track.scrollTo({
+            left: Math.max(0, targetLeft),
+            behavior: smooth ? 'smooth' : 'auto'
+        });
 
         updateDots(track, safeIndex);
         updateActiveSlide(track, safeIndex);
@@ -922,5 +791,12 @@ function initSimpleCarousel() {
     if (femaleTrack) setupCarousel(femaleTrack, femalePrev, femaleNext);
 }
 
-onDocumentReady(initSimpleCarousel);
-onDocumentReady(initScrollAnimation);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSimpleCarousel);
+} else {
+    initSimpleCarousel();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initScrollAnimation();
+});

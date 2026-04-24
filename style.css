@@ -99,10 +99,6 @@ body.intro-active {
 
 .site-background {
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     inset: 0;
     z-index: -2;
     overflow: hidden;
@@ -113,10 +109,6 @@ body.intro-active {
 .site-background::before {
     content: "";
     position: absolute;
-    top: -8%;
-    right: -8%;
-    bottom: -8%;
-    left: -8%;
     inset: -8%;
     opacity: 0;
     background:
@@ -134,10 +126,6 @@ body.intro-active {
 .site-background::after {
     content: '';
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     inset: 0;
     background:
         linear-gradient(180deg, rgba(255, 253, 249, 0.46), rgba(251, 247, 241, 0.58)),
@@ -169,10 +157,6 @@ body.intro-active {
     --intro-open-duration: 2s;
     --intro-red: #d6a6b1;
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     inset: 0;
     z-index: 40;
     overflow: hidden;
@@ -189,10 +173,6 @@ body.intro-active {
 
 .envelope-intro__backdrop {
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     inset: 0;
     background: #f0efe9;
     transition: opacity 0.1s linear;
@@ -212,10 +192,6 @@ body.intro-active {
 
 .envelope-intro__envelope {
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     inset: 0;
     cursor: pointer;
     outline: none;
@@ -2128,53 +2104,53 @@ footer p {
 }
 
 /* Анимация появления блоков при прокрутке */
-body.js-enhanced .organizer-contact,
-body.js-enhanced .timer-section,
-body.js-enhanced .calendar-section,
-body.js-enhanced .schedule,
-body.js-enhanced .location,
-body.js-enhanced .dresscode,
-body.js-enhanced .info,
-body.js-enhanced .photo-interlude,
-body.js-enhanced .rsvp {
+.organizer-contact,
+.timer-section,
+.calendar-section,
+.schedule,
+.location,
+.dresscode,
+.info,
+.photo-interlude,
+.rsvp {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-body.js-enhanced .organizer-contact.visible-scroll,
-body.js-enhanced .timer-section.visible-scroll,
-body.js-enhanced .calendar-section.visible-scroll,
-body.js-enhanced .schedule.visible-scroll,
-body.js-enhanced .location.visible-scroll,
-body.js-enhanced .dresscode.visible-scroll,
-body.js-enhanced .info.visible-scroll,
-body.js-enhanced .photo-interlude.visible-scroll,
-body.js-enhanced .rsvp.visible-scroll {
+.organizer-contact.visible-scroll,
+.timer-section.visible-scroll,
+.calendar-section.visible-scroll,
+.schedule.visible-scroll,
+.location.visible-scroll,
+.dresscode.visible-scroll,
+.info.visible-scroll,
+.photo-interlude.visible-scroll,
+.rsvp.visible-scroll {
     opacity: 1;
     transform: translateY(0);
 }
 /* Блок организационных моментов анимируем отдельно, чтобы контент был виден */
-body.js-enhanced .info {
+.info {
     transform: translateY(30px);
 }
 
-body.js-enhanced .info .info-item {
+.info .info-item {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-body.js-enhanced .info.visible-scroll .info-item {
+.info.visible-scroll .info-item {
     opacity: 1;
     transform: translateY(0);
 }
 
 /* Поэтапное появление элементов внутри .info */
-body.js-enhanced .info.visible-scroll .info-item:nth-child(1) { transition-delay: 0.1s; }
-body.js-enhanced .info.visible-scroll .info-item:nth-child(2) { transition-delay: 0.2s; }
-body.js-enhanced .info.visible-scroll .info-item:nth-child(3) { transition-delay: 0.3s; }
-body.js-enhanced .info.visible-scroll .info-item:nth-child(4) { transition-delay: 0.4s; }
+.info.visible-scroll .info-item:nth-child(1) { transition-delay: 0.1s; }
+.info.visible-scroll .info-item:nth-child(2) { transition-delay: 0.2s; }
+.info.visible-scroll .info-item:nth-child(3) { transition-delay: 0.3s; }
+.info.visible-scroll .info-item:nth-child(4) { transition-delay: 0.4s; }
 
 .simple-carousel {
     position: relative;
