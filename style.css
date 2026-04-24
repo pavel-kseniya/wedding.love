@@ -2104,44 +2104,44 @@ footer p {
 }
 
 /* Анимация появления блоков при прокрутке */
-.js .organizer-contact,
-.js .timer-section,
-.js .calendar-section,
-.js .schedule,
-.js .location,
-.js .dresscode,
-.js .info,
-.js .photo-interlude,
-.js .rsvp {
+.organizer-contact,
+.timer-section,
+.calendar-section,
+.schedule,
+.location,
+.dresscode,
+.info,
+.photo-interlude,
+.rsvp {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.js .organizer-contact.visible-scroll,
-.js .timer-section.visible-scroll,
-.js .calendar-section.visible-scroll,
-.js .schedule.visible-scroll,
-.js .location.visible-scroll,
-.js .dresscode.visible-scroll,
-.js .info.visible-scroll,
-.js .photo-interlude.visible-scroll,
-.js .rsvp.visible-scroll {
+.organizer-contact.visible-scroll,
+.timer-section.visible-scroll,
+.calendar-section.visible-scroll,
+.schedule.visible-scroll,
+.location.visible-scroll,
+.dresscode.visible-scroll,
+.info.visible-scroll,
+.photo-interlude.visible-scroll,
+.rsvp.visible-scroll {
     opacity: 1;
     transform: translateY(0);
 }
 /* Блок организационных моментов анимируем отдельно, чтобы контент был виден */
-.js .info {
+.info {
     transform: translateY(30px);
 }
 
-.js .info .info-item {
+.info .info-item {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.js .info.visible-scroll .info-item {
+.info.visible-scroll .info-item {
     opacity: 1;
     transform: translateY(0);
 }
