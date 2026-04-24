@@ -1,9 +1,53 @@
-﻿if ('scrollRestoration' in history) {
+﻿if (document.body) {
+    document.body.classList.add('js-enhanced');
+}
+
+if (!String.prototype.padStart) {
+    String.prototype.padStart = function padStart(targetLength, padString) {
+        var output = String(this);
+        var fill = String(padString || ' ');
+
+        while (output.length < targetLength) {
+            output = fill + output;
+        }
+
+        return output.slice(-targetLength);
+    };
+}
+
+if (window.Element && !Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+}
+
+if (window.Element && !Element.prototype.closest) {
+    Element.prototype.closest = function closest(selector) {
+        var current = this;
+
+        while (current && current.nodeType === 1) {
+            if (current.matches(selector)) return current;
+            current = current.parentElement || current.parentNode;
+        }
+
+        return null;
+    };
+}
+
+if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
 
 function resetPageScroll() {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    } catch (error) {
+        window.scrollTo(0, 0);
+    }
+}
+
+function revealAll(elements, className) {
+    Array.prototype.forEach.call(elements, function(element) {
+        element.classList.add(className);
+    });
 }
 
 // ===== ТАЙМЕР ОБРАТНОГО ОТСЧЕТА =====
@@ -51,9 +95,9 @@ class EnvelopeIntro {
         this.root = root;
         this.onOpenComplete = onOpenComplete;
         this.storageKey = storageKey;
-        this.trigger = root?.querySelector('#envelopeTrigger');
-        this.button = root?.querySelector('#envelopeOpenButton');
-        this.panel = root?.querySelector('.envelope-intro__panel');
+        this.trigger = root ? root.querySelector('#envelopeTrigger') : null;
+        this.button = root ? root.querySelector('#envelopeOpenButton') : null;
+        this.panel = root ? root.querySelector('.envelope-intro__panel') : null;
         this.isOpened = false;
         this.isAnimating = false;
         this.openTimeout = null;
@@ -94,7 +138,9 @@ class EnvelopeIntro {
         this.button.addEventListener('click', this.handleOpen);
         this.trigger.addEventListener('keydown', this.handleKeydown);
         window.addEventListener('resize', this.handleResize, { passive: true });
-        window.visualViewport?.addEventListener('resize', this.handleResize, { passive: true });
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', this.handleResize, { passive: true });
+        }
     }
 
     setResponsiveScale() {
@@ -188,7 +234,7 @@ function initEnvelopeIntro() {
 
 function initBackgroundVideoFallback() {
     const background = document.querySelector('.site-background');
-    const video = background?.querySelector('.site-background-video');
+    const video = background ? background.querySelector('.site-background-video') : null;
 
     if (!background || !video) return;
 
@@ -198,24 +244,37 @@ function initBackgroundVideoFallback() {
         background.classList.toggle('is-static', isStatic);
     }
 
-    async function tryStartVideo() {
+    function tryStartVideo() {
         if (playAttemptInFlight) return;
         playAttemptInFlight = true;
+
+        function finishAttempt() {
+            playAttemptInFlight = false;
+        }
 
         try {
             const playResult = video.play();
 
             if (playResult && typeof playResult.then === 'function') {
-                await playResult;
+                playResult.then(function() {
+                    window.setTimeout(function() {
+                        setStaticBackground(video.paused || video.readyState < 2);
+                        finishAttempt();
+                    }, 180);
+                }).catch(function() {
+                    setStaticBackground(true);
+                    finishAttempt();
+                });
+                return;
             }
 
-            window.setTimeout(() => {
+            window.setTimeout(function() {
                 setStaticBackground(video.paused || video.readyState < 2);
+                finishAttempt();
             }, 180);
         } catch (error) {
             setStaticBackground(true);
-        } finally {
-            playAttemptInFlight = false;
+            finishAttempt();
         }
     }
 
@@ -273,10 +332,16 @@ function initMusicPlayer() {
 
     }
 
-    button.addEventListener('click', async () => {
+    button.addEventListener('click', function() {
         if (audio.paused) {
             try {
-                await audio.play();
+                var playResult = audio.play();
+
+                if (playResult && typeof playResult.catch === 'function') {
+                    playResult.catch(function() {
+                        button.setAttribute('aria-label', 'Не удалось включить музыку');
+                    });
+                }
             } catch (error) {
                 button.setAttribute('aria-label', 'Не удалось включить музыку');
             }
@@ -437,43 +502,53 @@ document.addEventListener('DOMContentLoaded', function() {
     const timeline = document.querySelector('.timeline');
     const hearts = document.querySelectorAll('.timeline-heart');
     const timelineItems = document.querySelectorAll('.timeline-item');
+    const hasIntersectionObserver = 'IntersectionObserver' in window;
     
     if (timeline && hearts.length) {
-        const observerTimeline = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        timeline.classList.add('animate');
-                    }, 200);
-                    
-                    hearts.forEach((heart, index) => {
+        if (!hasIntersectionObserver) {
+            timeline.classList.add('animate');
+            revealAll(hearts, 'animate');
+        } else {
+            const observerTimeline = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
                         setTimeout(() => {
-                            heart.classList.add('animate');
-                        }, 300 + (index * 80));
-                    });
-                    
-                    observerTimeline.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.2 });
-        
-        observerTimeline.observe(timeline);
+                            timeline.classList.add('animate');
+                        }, 200);
+                        
+                        hearts.forEach((heart, index) => {
+                            setTimeout(() => {
+                                heart.classList.add('animate');
+                            }, 300 + (index * 80));
+                        });
+                        
+                        observerTimeline.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            observerTimeline.observe(timeline);
+        }
     }
     
     if (timelineItems.length) {
-        const observerItems = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, 100);
-                }
+        if (!hasIntersectionObserver) {
+            revealAll(timelineItems, 'visible');
+        } else {
+            const observerItems = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, 100);
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            timelineItems.forEach(item => {
+                observerItems.observe(item);
             });
-        }, { threshold: 0.3 });
-        
-        timelineItems.forEach(item => {
-            observerItems.observe(item);
-        });
+        }
     }
 
     const timelinePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -567,17 +642,21 @@ function initInfoItemsAnimation() {
     const isMobile = window.innerWidth <= 768;
     
     if (isMobile) {
-        const observerInfo = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible-mobile');
-                }
+        if (!('IntersectionObserver' in window)) {
+            revealAll(infoItems, 'visible-mobile');
+        } else {
+            const observerInfo = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible-mobile');
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            infoItems.forEach(item => {
+                observerInfo.observe(item);
             });
-        }, { threshold: 0.3 });
-        
-        infoItems.forEach(item => {
-            observerInfo.observe(item);
-        });
+        }
     }
 }
 
@@ -592,17 +671,21 @@ window.addEventListener('resize', function() {
             item.classList.remove('visible-mobile');
         });
         
-        const observerInfo = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible-mobile');
-                }
+        if (!('IntersectionObserver' in window)) {
+            revealAll(infoItems, 'visible-mobile');
+        } else {
+            const observerInfo = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible-mobile');
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            infoItems.forEach(item => {
+                observerInfo.observe(item);
             });
-        }, { threshold: 0.3 });
-        
-        infoItems.forEach(item => {
-            observerInfo.observe(item);
-        });
+        }
     } else {
         infoItems.forEach(item => {
             item.classList.remove('visible-mobile');
@@ -657,7 +740,8 @@ function initSimpleCarousel() {
     }
 
     function getDotsContainer(track) {
-        return track.closest('.carousel-section')?.querySelector('.simple-dots') || null;
+        var section = track.closest('.carousel-section');
+        return section ? section.querySelector('.simple-dots') : null;
     }
 
     function getCenteredIndex(track) {
@@ -706,10 +790,14 @@ function initSimpleCarousel() {
         const slide = slides[safeIndex];
         const targetLeft = slide.offsetLeft - ((track.clientWidth - slide.offsetWidth) / 2);
 
-        track.scrollTo({
-            left: Math.max(0, targetLeft),
-            behavior: smooth ? 'smooth' : 'auto'
-        });
+        try {
+            track.scrollTo({
+                left: Math.max(0, targetLeft),
+                behavior: smooth ? 'smooth' : 'auto'
+            });
+        } catch (error) {
+            track.scrollLeft = Math.max(0, targetLeft);
+        }
 
         updateDots(track, safeIndex);
         updateActiveSlide(track, safeIndex);
