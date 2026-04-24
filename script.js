@@ -8,7 +8,7 @@ function resetPageScroll() {
 
 // ===== ТАЙМЕР ОБРАТНОГО ОТСЧЕТА =====
 function updateTimer() {
-    const weddingDate = new Date(2026, 7, 2, 14, 0);
+    const weddingDate = new Date(2026, 7, 2, 15, 0);
     const now = new Date();
     const diff = weddingDate - now;
     
