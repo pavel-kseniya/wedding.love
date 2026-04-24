@@ -1329,6 +1329,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 26px;
     color: var(--color-rose);
     transition: all 0.3s ease;
 }
@@ -1434,8 +1435,7 @@ section {
 }
 
 .rsvp-subtitle__date {
-    display: block;
-    margin-top: 6px;
+    display: inline;
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 4px;

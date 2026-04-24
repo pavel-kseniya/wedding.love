@@ -7,6 +7,7 @@
     <title>Павел & Ксения | Приглашение на свадьбу</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600&display=swap"
         rel="stylesheet">
@@ -15,7 +16,9 @@
 
 <body>
     <div class="site-background" aria-hidden="true">
-        <video class="site-background-video" autoplay muted loop playsinline preload="none" data-src="videos/1.mp4"></video>
+        <video class="site-background-video" autoplay muted loop playsinline preload="metadata">
+            <source src="videos/1.mp4" type="video/mp4">
+        </video>
     </div>
 
     <div class="envelope-intro" id="envelopeIntro" aria-hidden="false">
@@ -289,7 +292,7 @@
                 <!-- Женские образы -->
                 <div class="carousel-section">
                     <h3 class="carousel-title">Женские образы</h3>
-                    <p class="dresscode-caption">Просим оставить белый цвет для образа невесты</p>
+                    <p class="dresscode-caption">Просим оставить белый цвет для образа невесты.</p>
                     <div class="simple-carousel">
                         <button class="simple-prev" data-carousel="female" aria-label="Предыдущий слайд">&#10094;</button>
                         <div class="simple-track" data-track="female">
@@ -362,13 +365,7 @@
                 <ul class="info-list">
                     <li class="info-item">
                         <div class="info-icon">
-                            <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M4 10h16v10H4z"></path>
-                                <path d="M12 10v10"></path>
-                                <path d="M2.5 6.5h19v3.5h-19z"></path>
-                                <path d="M12 6.5H8.8a2 2 0 1 1 0-4c2 0 3.2 2.3 3.2 4Z"></path>
-                                <path d="M12 6.5h3.2a2 2 0 1 0 0-4c-2 0-3.2 2.3-3.2 4Z"></path>
-                            </svg>
+                            <i class="fas fa-gift"></i>
                         </div>
                         <div class="info-content">
                             <h3>О подарках</h3>
@@ -377,11 +374,7 @@
                     </li>
                     <li class="info-item">
                         <div class="info-icon">
-                            <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 20v-6.5"></path>
-                                <path d="M11.8 13c-3 0-5.3-2.3-5.3-5.3 3 0 5.3 2.3 5.3 5.3Z"></path>
-                                <path d="M12.2 15c0-3 2.3-5.3 5.3-5.3 0 3-2.3 5.3-5.3 5.3Z"></path>
-                            </svg>
+                            <i class="fas fa-seedling"></i>
                         </div>
                         <div class="info-content">
                             <h3>О цветах</h3>
@@ -391,11 +384,7 @@
                     </li>
                     <li class="info-item">
                         <div class="info-icon">
-                            <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
-                                <circle cx="12" cy="8.2" r="2.8"></circle>
-                                <path d="M8.6 20v-2.3a3.4 3.4 0 0 1 6.8 0V20"></path>
-                                <path d="M9.5 13.2h5"></path>
-                            </svg>
+                            <i class="fas fa-child"></i>
                         </div>
                         <div class="info-content">
                             <h3>О детях</h3>
@@ -405,12 +394,7 @@
                     </li>
                     <li class="info-item">
                         <div class="info-icon">
-                            <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M7 3.5h10v3a5 5 0 0 1-10 0z"></path>
-                                <path d="M12 11.5v6"></path>
-                                <path d="M9 20.5h6"></path>
-                                <path d="M5.5 3.5h13"></path>
-                            </svg>
+                            <i class="fas fa-champagne-glasses"></i>
                         </div>
                         <div class="info-content">
                             <h3>О формате праздника</h3>
@@ -435,8 +419,8 @@
             <div class="container">
                 <h2 class="section-title">Анкета</h2>
                 <p class="rsvp-subtitle">
-                    Пожалуйста, подтвердите свое присутствие
-                    <span class="rsvp-subtitle__date">до 15 июня</span>
+                    Пожалуйста, пройдите опрос как можно скорее — но обязательно <span class="rsvp-subtitle__date">до 15 июня</span>.<br>
+                    Нам очень важно заранее знать, сможете ли вы быть с нами, — так мы сможем продумать день до мелочей и позаботиться о каждом.
                 </p>
                 <form id="weddingForm" class="rsvp-form" method="POST"
                     action="https://script.google.com/macros/s/AKfycbwGPa7A1HU_8YB08PgRquDObEQp7ESOfd39xh5Nvh4gnz0CiDIHRPWy6DWd9_hep5T3-w/exec">
@@ -449,7 +433,6 @@
                         <select id="attendance" name="attendance" required>
                             <option value="">Выберите...</option>
                             <option value="yes">Да, с радостью</option>
-                            <option value="maybe">Пока не знаю</option>
                             <option value="no">Нет, к сожалению</option>
                         </select>
                     </div>
@@ -533,7 +516,7 @@
                             <svg class="icon icon--stroke" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M5 4.5h4l2 5-2.6 1.7a14.4 14.4 0 0 0 4.4 4.4L14.5 13l5 2v4a2 2 0 0 1-2.2 2A16.8 16.8 0 0 1 3 6.7 2 2 0 0 1 5 4.5Z"></path>
                             </svg>
-                            +7 986 747 7480
+                            +7 (986) 747-74-80
                         </a>
                         <a href="https://vk.ru/ashitok.kate" class="map-button organizer-contact__button" target="_blank" rel="noopener noreferrer">
                             <svg class="icon icon--fill" viewBox="0 0 24 24" aria-hidden="true">
