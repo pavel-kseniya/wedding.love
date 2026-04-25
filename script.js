@@ -483,6 +483,29 @@ if (weddingForm) {
         drinksHiddenInput.setAttribute('value', drinksHiddenInput.value);
     }
 
+    function removeDrinksSubmitInputs() {
+        const submitInputs = weddingForm.querySelectorAll('input[data-drinks-submit="true"]');
+        let index = 0;
+
+        for (index = 0; index < submitInputs.length; index += 1) {
+            submitInputs[index].parentNode.removeChild(submitInputs[index]);
+        }
+    }
+
+    function syncDrinksSubmitInput() {
+        const submitInput = document.createElement('input');
+
+        removeDrinksSubmitInputs();
+        updateDrinksField();
+
+        submitInput.type = 'hidden';
+        submitInput.name = 'drinks';
+        submitInput.value = drinksHiddenInput.value;
+        submitInput.setAttribute('value', drinksHiddenInput.value);
+        submitInput.setAttribute('data-drinks-submit', 'true');
+        weddingForm.appendChild(submitInput);
+    }
+
     function syncDrinksOptionState() {
         let index = 0;
 
@@ -557,7 +580,7 @@ if (weddingForm) {
 
         formMessage.style.display = 'none';
         formSuccessNote.classList.add('is-hidden');
-        updateDrinksField();
+        syncDrinksSubmitInput();
         syncDrinksOptionState();
         
         submitBtn.disabled = true;
@@ -576,6 +599,7 @@ if (weddingForm) {
             formMessage.style.display = 'block';
             formSuccessNote.classList.remove('is-hidden');
             form.reset();
+            removeDrinksSubmitInputs();
             updateAttendanceDependentFields();
             updateDrinksField();
             form.classList.add('is-hidden');
@@ -608,6 +632,7 @@ if (weddingForm) {
     if (resetFormBtn) {
         resetFormBtn.addEventListener('click', function() {
             weddingForm.reset();
+            removeDrinksSubmitInputs();
             updateAttendanceDependentFields();
             updateDrinksField();
             weddingForm.classList.remove('is-hidden');
