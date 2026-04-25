@@ -883,12 +883,10 @@ section {
     top: 0;
     height: 100%;
     width: 128px;
-    background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 1200' preserveAspectRatio='none'%3E%3Cpath d='M64 0 C108 78 108 162 64 240 C20 318 20 402 64 480 C108 558 108 642 64 720 C20 798 20 882 64 960 C108 1038 108 1122 64 1200' fill='none' stroke='%23d6a6b1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
-        linear-gradient(180deg, rgba(214, 166, 177, 0.92), rgba(214, 166, 177, 0.92));
-    background-repeat: no-repeat, no-repeat;
-    background-position: center top, center top;
-    background-size: 128px 100%, 4px 100%;
+    background-image: linear-gradient(180deg, rgba(214, 166, 177, 0.92), rgba(214, 166, 177, 0.92));
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: 4px 100%;
     transform: translateX(-50%) scaleY(1);
     transform-origin: top;
     transition: transform 1.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
@@ -897,6 +895,10 @@ section {
 }
 
 body.has-advanced-effects .timeline::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 1200' preserveAspectRatio='none'%3E%3Cpath d='M64 0 C108 78 108 162 64 240 C20 318 20 402 64 480 C108 558 108 642 64 720 C20 798 20 882 64 960 C108 1038 108 1122 64 1200' fill='none' stroke='%23d6a6b1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: 128px 100%;
     transform: translateX(-50%) scaleY(0);
 }
 
@@ -1561,12 +1563,27 @@ body.has-advanced-effects .timeline.animate::before {
     position: relative;
 }
 
+body:not(.has-advanced-effects) .checkbox-option {
+    padding: 10px 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    gap: 12px;
+}
+
 .checkbox-option.is-checked {
     border-color: rgba(214, 166, 177, 0.42);
     background: rgba(255, 252, 247, 0.92);
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.44),
         0 10px 24px rgba(185, 154, 104, 0.08);
+}
+
+body:not(.has-advanced-effects) .checkbox-option.is-checked {
+    border: none;
+    background: transparent;
+    box-shadow: none;
 }
 
 .checkbox-option:has(input:checked) {
@@ -1583,6 +1600,18 @@ body.has-advanced-effects .timeline.animate::before {
     pointer-events: none;
 }
 
+body:not(.has-advanced-effects) .checkbox-option input {
+    position: static;
+    opacity: 1;
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex: 0 0 18px;
+    -webkit-appearance: checkbox;
+    appearance: auto;
+}
+
 .checkbox-option::before {
     content: "";
     flex: 0 0 22px;
@@ -1597,6 +1626,10 @@ body.has-advanced-effects .timeline.animate::before {
         inset 0 1px 0 rgba(255, 255, 255, 0.72),
         0 1px 3px rgba(88, 62, 48, 0.07);
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+body:not(.has-advanced-effects) .checkbox-option::before {
+    display: none;
 }
 
 .checkbox-option.is-checked::before {
@@ -1624,6 +1657,10 @@ body.has-advanced-effects .timeline.animate::before {
     box-shadow:
         0 0 0 4px rgba(217, 167, 173, 0.12),
         inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+body:not(.has-advanced-effects) .checkbox-option.is-focused {
+    box-shadow: none;
 }
 
 .checkbox-option:has(input:focus-visible) {
@@ -2251,9 +2288,12 @@ body.has-scroll-animation .info.visible-scroll .info-item:nth-child(4) { transit
     flex: 0 0 auto;
     width: 250px;
     scroll-snap-align: center;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+body.has-advanced-effects .simple-slide {
     transform: scale(0.94);
     opacity: 0.6;
-    transition: transform 0.35s ease, opacity 0.35s ease;
 }
 
 .simple-slide img {

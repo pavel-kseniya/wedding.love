@@ -112,19 +112,6 @@ function scrollElementTo(track, left, behavior) {
     track.scrollLeft = safeLeft;
 }
 
-function dispatchNativeChangeEvent(element) {
-    let changeEvent = null;
-
-    if (typeof Event === 'function') {
-        changeEvent = new Event('change', { bubbles: true });
-    } else {
-        changeEvent = document.createEvent('HTMLEvents');
-        changeEvent.initEvent('change', true, false);
-    }
-
-    element.dispatchEvent(changeEvent);
-}
-
 applyBrowserSupportClasses();
 
 // ===== ТАЙМЕР ОБРАТНОГО ОТСЧЕТА =====
@@ -482,22 +469,30 @@ if (weddingForm) {
     }
 
     function updateDrinksField() {
-        const selectedDrinks = Array.from(drinksCheckboxes)
-            .filter((checkbox) => checkbox.checked)
-            .map((checkbox) => checkbox.value);
+        const selectedDrinks = [];
+        let index = 0;
+
+        for (index = 0; index < drinksCheckboxes.length; index += 1) {
+            if (drinksCheckboxes[index].checked) {
+                selectedDrinks.push(drinksCheckboxes[index].value);
+            }
+        }
 
         drinksHiddenInput.value = selectedDrinks.join(', ');
     }
 
     function syncDrinksOptionState() {
-        drinksOptions.forEach((option) => {
+        let index = 0;
+
+        for (index = 0; index < drinksOptions.length; index += 1) {
+            const option = drinksOptions[index];
             const checkbox = option.querySelector('input[type="checkbox"]');
             if (checkbox && checkbox.checked) {
                 option.classList.add('is-checked');
             } else {
                 option.classList.remove('is-checked');
             }
-        });
+        }
     }
 
     function updateAttendanceDependentFields() {
@@ -509,9 +504,11 @@ if (weddingForm) {
         wishesGroup.classList.remove('is-hidden');
 
         if (hidePreferenceFields) {
-            drinksCheckboxes.forEach((checkbox) => {
-                checkbox.checked = false;
-            });
+            let index = 0;
+
+            for (index = 0; index < drinksCheckboxes.length; index += 1) {
+                drinksCheckboxes[index].checked = false;
+            }
             dietInput.value = '';
             updateDrinksField();
             syncDrinksOptionState();
@@ -522,16 +519,13 @@ if (weddingForm) {
 
     guestsInput.addEventListener('input', updateCompanionsField);
     attendanceInput.addEventListener('change', updateAttendanceDependentFields);
-    drinksOptions.forEach((option) => {
+
+    let drinksIndex = 0;
+    for (drinksIndex = 0; drinksIndex < drinksOptions.length; drinksIndex += 1) {
+        const option = drinksOptions[drinksIndex];
         const checkbox = option.querySelector('input[type="checkbox"]');
 
-        if (!checkbox) return;
-
-        option.addEventListener('click', function(event) {
-            event.preventDefault();
-            checkbox.checked = !checkbox.checked;
-            dispatchNativeChangeEvent(checkbox);
-        });
+        if (!checkbox) continue;
 
         checkbox.addEventListener('focus', function() {
             option.classList.add('is-focused');
@@ -545,7 +539,7 @@ if (weddingForm) {
             updateDrinksField();
             syncDrinksOptionState();
         });
-    });
+    }
 
     updateAttendanceDependentFields();
     updateDrinksField();
