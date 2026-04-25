@@ -497,19 +497,33 @@ if (weddingForm) {
         drinksHiddenInput = nextInput;
     }
 
-    function syncFormActionWithDrinks() {
-        const drinksValue = drinksHiddenInput.value || '';
-        const hasQuery = originalFormAction.indexOf('?') !== -1;
-        const separator = hasQuery ? '&' : '?';
+    function appendTransportInput(form, name, value) {
+        const input = document.createElement('input');
 
-        weddingForm.setAttribute(
-            'action',
-            `${originalFormAction}${separator}drinks=${encodeURIComponent(drinksValue)}`
-        );
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value || '';
+        form.appendChild(input);
     }
 
-    function resetFormAction() {
-        weddingForm.setAttribute('action', originalFormAction);
+    function buildTransportForm(targetName) {
+        const transportForm = document.createElement('form');
+
+        refreshDrinksHiddenInput();
+        transportForm.method = 'POST';
+        transportForm.action = originalFormAction;
+        transportForm.target = targetName;
+        transportForm.style.display = 'none';
+
+        appendTransportInput(transportForm, 'name', document.getElementById('name').value);
+        appendTransportInput(transportForm, 'attendance', attendanceInput.value);
+        appendTransportInput(transportForm, 'guests', guestsInput.value);
+        appendTransportInput(transportForm, 'companions', companionsInput.value);
+        appendTransportInput(transportForm, 'drinks', drinksHiddenInput.value);
+        appendTransportInput(transportForm, 'diet', dietInput.value);
+        appendTransportInput(transportForm, 'wishes', wishesInput.value);
+
+        return transportForm;
     }
 
     function syncDrinksOptionState() {
@@ -618,11 +632,8 @@ if (weddingForm) {
             return;
         }
 
-        e.preventDefault();
         formMessage.style.display = 'none';
         formSuccessNote.classList.add('is-hidden');
-        refreshDrinksHiddenInput();
-        syncFormActionWithDrinks();
         syncDrinksOptionState();
         
         submitBtn.disabled = true;
@@ -630,10 +641,10 @@ if (weddingForm) {
         
         const iframe = document.createElement('iframe');
         iframe.name = 'hidden_iframe_' + Date.now();
+        const transportForm = buildTransportForm(iframe.name);
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
-        
-        form.target = iframe.name;
+        document.body.appendChild(transportForm);
         
         iframe.onload = function() {
             formMessage.className = 'form-message success';
@@ -643,13 +654,12 @@ if (weddingForm) {
             form.reset();
             updateAttendanceDependentFields();
             updateDrinksField();
-            refreshDrinksHiddenInput();
-            resetFormAction();
             form.classList.add('is-hidden');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Отправить';
             
             setTimeout(() => {
+                document.body.removeChild(transportForm);
                 document.body.removeChild(iframe);
             }, 2000);
             
@@ -663,13 +673,13 @@ if (weddingForm) {
             formMessage.textContent = 'Ошибка отправки. Пожалуйста, попробуйте еще раз.';
             formMessage.style.display = 'block';
             formSuccessNote.classList.add('is-hidden');
-            resetFormAction();
             submitBtn.disabled = false;
             submitBtn.textContent = 'Отправить';
+            document.body.removeChild(transportForm);
             document.body.removeChild(iframe);
         };
-        
-        form.submit();
+
+        transportForm.submit();
     });
 
     const resetFormBtn = document.getElementById('resetFormBtn');
@@ -678,8 +688,6 @@ if (weddingForm) {
             weddingForm.reset();
             updateAttendanceDependentFields();
             updateDrinksField();
-            refreshDrinksHiddenInput();
-            resetFormAction();
             weddingForm.classList.remove('is-hidden');
             document.getElementById('formSuccessNote').classList.add('is-hidden');
             document.getElementById('formMessage').style.display = 'none';
