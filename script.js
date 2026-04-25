@@ -451,6 +451,7 @@ if (weddingForm) {
     const drinksCheckboxes = weddingForm.querySelectorAll('#drinksGroup input[type="checkbox"]');
     const drinksOptions = weddingForm.querySelectorAll('#drinksGroup .checkbox-option');
     const submitBtn = document.getElementById('submitBtn');
+    const originalFormAction = weddingForm.getAttribute('action') || '';
     let allowExplicitSubmit = false;
 
     function updateCompanionsField() {
@@ -494,6 +495,21 @@ if (weddingForm) {
         nextInput.setAttribute('value', drinksHiddenInput.value);
         drinksHiddenInput.parentNode.replaceChild(nextInput, drinksHiddenInput);
         drinksHiddenInput = nextInput;
+    }
+
+    function syncFormActionWithDrinks() {
+        const drinksValue = drinksHiddenInput.value || '';
+        const hasQuery = originalFormAction.indexOf('?') !== -1;
+        const separator = hasQuery ? '&' : '?';
+
+        weddingForm.setAttribute(
+            'action',
+            `${originalFormAction}${separator}drinks=${encodeURIComponent(drinksValue)}`
+        );
+    }
+
+    function resetFormAction() {
+        weddingForm.setAttribute('action', originalFormAction);
     }
 
     function syncDrinksOptionState() {
@@ -606,6 +622,7 @@ if (weddingForm) {
         formMessage.style.display = 'none';
         formSuccessNote.classList.add('is-hidden');
         refreshDrinksHiddenInput();
+        syncFormActionWithDrinks();
         syncDrinksOptionState();
         
         submitBtn.disabled = true;
@@ -627,6 +644,7 @@ if (weddingForm) {
             updateAttendanceDependentFields();
             updateDrinksField();
             refreshDrinksHiddenInput();
+            resetFormAction();
             form.classList.add('is-hidden');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Отправить';
@@ -645,6 +663,7 @@ if (weddingForm) {
             formMessage.textContent = 'Ошибка отправки. Пожалуйста, попробуйте еще раз.';
             formMessage.style.display = 'block';
             formSuccessNote.classList.add('is-hidden');
+            resetFormAction();
             submitBtn.disabled = false;
             submitBtn.textContent = 'Отправить';
             document.body.removeChild(iframe);
@@ -660,6 +679,7 @@ if (weddingForm) {
             updateAttendanceDependentFields();
             updateDrinksField();
             refreshDrinksHiddenInput();
+            resetFormAction();
             weddingForm.classList.remove('is-hidden');
             document.getElementById('formSuccessNote').classList.add('is-hidden');
             document.getElementById('formMessage').style.display = 'none';
