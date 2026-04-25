@@ -42,6 +42,37 @@ function supportsIntersectionObserver() {
     return typeof window.IntersectionObserver === 'function';
 }
 
+function supportsSelectorCondition(conditionText) {
+    if (!window.CSS || typeof window.CSS.supports !== 'function') {
+        return false;
+    }
+
+    try {
+        return window.CSS.supports(conditionText);
+    } catch (error) {
+        return false;
+    }
+}
+
+function supportsAdvancedEffects() {
+    if (!window.CSS || typeof window.CSS.supports !== 'function') {
+        return false;
+    }
+
+    return window.CSS.supports('filter', 'blur(3px)')
+        && supportsSelectorCondition('selector(:has(*))');
+}
+
+function applyBrowserSupportClasses() {
+    if (!document.body) return;
+
+    if (supportsAdvancedEffects()) {
+        document.body.classList.add('has-advanced-effects');
+    } else {
+        document.body.classList.remove('has-advanced-effects');
+    }
+}
+
 function getClosestElement(element, selector) {
     if (!element) return null;
     if (typeof element.closest === 'function') {
@@ -80,6 +111,21 @@ function scrollElementTo(track, left, behavior) {
 
     track.scrollLeft = safeLeft;
 }
+
+function dispatchNativeChangeEvent(element) {
+    let changeEvent = null;
+
+    if (typeof Event === 'function') {
+        changeEvent = new Event('change', { bubbles: true });
+    } else {
+        changeEvent = document.createEvent('HTMLEvents');
+        changeEvent.initEvent('change', true, false);
+    }
+
+    element.dispatchEvent(changeEvent);
+}
+
+applyBrowserSupportClasses();
 
 // ===== ТАЙМЕР ОБРАТНОГО ОТСЧЕТА =====
 function updateTimer() {
@@ -416,6 +462,7 @@ if (weddingForm) {
     const wishesInput = document.getElementById('wishes');
     const drinksHiddenInput = document.getElementById('drinks');
     const drinksCheckboxes = weddingForm.querySelectorAll('#drinksGroup input[type="checkbox"]');
+    const drinksOptions = weddingForm.querySelectorAll('#drinksGroup .checkbox-option');
 
     function updateCompanionsField() {
         const guestsCount = Number(guestsInput.value) || 1;
@@ -442,6 +489,17 @@ if (weddingForm) {
         drinksHiddenInput.value = selectedDrinks.join(', ');
     }
 
+    function syncDrinksOptionState() {
+        drinksOptions.forEach((option) => {
+            const checkbox = option.querySelector('input[type="checkbox"]');
+            if (checkbox && checkbox.checked) {
+                option.classList.add('is-checked');
+            } else {
+                option.classList.remove('is-checked');
+            }
+        });
+    }
+
     function updateAttendanceDependentFields() {
         const attendanceValue = attendanceInput.value;
         const hidePreferenceFields = attendanceValue === 'no';
@@ -456,6 +514,7 @@ if (weddingForm) {
             });
             dietInput.value = '';
             updateDrinksField();
+            syncDrinksOptionState();
         }
 
         updateCompanionsField();
@@ -463,12 +522,34 @@ if (weddingForm) {
 
     guestsInput.addEventListener('input', updateCompanionsField);
     attendanceInput.addEventListener('change', updateAttendanceDependentFields);
-    drinksCheckboxes.forEach((checkbox) => {
-        checkbox.addEventListener('change', updateDrinksField);
+    drinksOptions.forEach((option) => {
+        const checkbox = option.querySelector('input[type="checkbox"]');
+
+        if (!checkbox) return;
+
+        option.addEventListener('click', function(event) {
+            event.preventDefault();
+            checkbox.checked = !checkbox.checked;
+            dispatchNativeChangeEvent(checkbox);
+        });
+
+        checkbox.addEventListener('focus', function() {
+            option.classList.add('is-focused');
+        });
+
+        checkbox.addEventListener('blur', function() {
+            option.classList.remove('is-focused');
+        });
+
+        checkbox.addEventListener('change', function() {
+            updateDrinksField();
+            syncDrinksOptionState();
+        });
     });
 
     updateAttendanceDependentFields();
     updateDrinksField();
+    syncDrinksOptionState();
 
     weddingForm.addEventListener('submit', function(e) {
         e.preventDefault();
