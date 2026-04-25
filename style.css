@@ -883,10 +883,10 @@ section {
     top: 0;
     height: 100%;
     width: 128px;
-    background-image: linear-gradient(180deg, rgba(214, 166, 177, 0.92), rgba(214, 166, 177, 0.92));
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 1200' preserveAspectRatio='none'%3E%3Cpath d='M64 0 C108 78 108 162 64 240 C20 318 20 402 64 480 C108 558 108 642 64 720 C20 798 20 882 64 960 C108 1038 108 1122 64 1200' fill='none' stroke='%23d6a6b1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center top;
-    background-size: 4px 100%;
+    background-size: 128px 100%;
     transform: translateX(-50%) scaleY(1);
     transform-origin: top;
     transition: transform 1.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
@@ -895,10 +895,6 @@ section {
 }
 
 body.has-advanced-effects .timeline::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 1200' preserveAspectRatio='none'%3E%3Cpath d='M64 0 C108 78 108 162 64 240 C20 318 20 402 64 480 C108 558 108 642 64 720 C20 798 20 882 64 960 C108 1038 108 1122 64 1200' fill='none' stroke='%23d6a6b1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center top;
-    background-size: 128px 100%;
     transform: translateX(-50%) scaleY(0);
 }
 
@@ -2288,12 +2284,9 @@ body.has-scroll-animation .info.visible-scroll .info-item:nth-child(4) { transit
     flex: 0 0 auto;
     width: 250px;
     scroll-snap-align: center;
-    transition: transform 0.35s ease, opacity 0.35s ease;
-}
-
-body.has-advanced-effects .simple-slide {
-    transform: scale(0.94);
-    opacity: 0.6;
+    opacity: 1;
+    transform: none;
+    transition: box-shadow 0.35s ease;
 }
 
 .simple-slide img {
@@ -2307,21 +2300,12 @@ body.has-advanced-effects .simple-slide {
 }
 
 .simple-slide.active {
-    transform: scale(1);
     opacity: 1;
-}
-
-body.has-advanced-effects .simple-slide img {
-    filter: blur(3px);
-    transition: filter 0.35s ease, box-shadow 0.35s ease;
+    transform: none;
 }
 
 .simple-slide.active img {
     box-shadow: var(--surface-shadow-hover);
-}
-
-body.has-advanced-effects .simple-slide.active img {
-    filter: blur(0);
 }
 
 .simple-prev, .simple-next {

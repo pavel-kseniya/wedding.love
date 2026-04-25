@@ -479,6 +479,8 @@ if (weddingForm) {
         }
 
         drinksHiddenInput.value = selectedDrinks.join(', ');
+        drinksHiddenInput.defaultValue = drinksHiddenInput.value;
+        drinksHiddenInput.setAttribute('value', drinksHiddenInput.value);
     }
 
     function syncDrinksOptionState() {
@@ -555,6 +557,8 @@ if (weddingForm) {
 
         formMessage.style.display = 'none';
         formSuccessNote.classList.add('is-hidden');
+        updateDrinksField();
+        syncDrinksOptionState();
         
         submitBtn.disabled = true;
         submitBtn.textContent = 'Отправка...';
